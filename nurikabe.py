@@ -376,7 +376,7 @@ if __name__ == '__main__':
     else:
         print "Usage: # python %s filename" % argvs[0]
         print "Use default filename:hoge.txt"
-        fileName = "p4.txt"
+        fileName = "p2.txt"
 
     f = open(fileName, 'r')
     wList = []
@@ -409,7 +409,7 @@ if __name__ == '__main__':
     for i in range(0, islID - 1):
         islIndexList[i].append(islList[i][0])
 
-    printBoards(board)
+    #printBoards(board)
 
     possibleAnsList = [[] for i in range(islID - 1)]
 
@@ -439,11 +439,7 @@ if __name__ == '__main__':
                 if put not in islIndexList[indx]:
                     islIndexList[indx].append(put)
             indx += 1
-        printBoards(board)
-
-        for i in possibleAnsList:
-            print "num:", len(i), ":", i
-        exit()
+        #printBoards(board)
 
         #2x2Island
         #canPutter is (index, islId). 
@@ -478,7 +474,7 @@ if __name__ == '__main__':
             indx += 1
 
         if oldBoard == board:
-            print "end heulistic search"
+            print "end heuristic search"
             print "loop:", k
             break
         oldBoard = copy.deepcopy(board)
@@ -486,6 +482,7 @@ if __name__ == '__main__':
 
     #try searching.
     #depthSearch(board, possibleAnsList, islList)
+
     indx = 0
     for j in possibleAnsList:
         if len(j) == 1:
@@ -497,5 +494,5 @@ if __name__ == '__main__':
         indx += 1
         
     if checkBoardState(board):
-        print "This is Answer. FINISH."
+        print "This is Answer."
         printBoard(board)
