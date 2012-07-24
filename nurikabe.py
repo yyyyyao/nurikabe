@@ -220,15 +220,16 @@ def checkPath(isl, _islIndexList):
                 if i in cIndexes:
                     continue
                 if __board[i][0] == 0:
-                    _board = copy.deepcopy(__board)
-                    _board[i][0] = islId
-                    _board[i][1] = islNum
                     _cIndexes = copy.deepcopy(cIndexes)
                     _cIndexes.append(i)
                     _cIndexes.sort()
                     key = tuple(_cIndexes)
                     if key in checkedWList:
                         continue
+                    _board = copy.deepcopy(__board)
+                    _board[i][0] = islId
+                    _board[i][1] = islNum
+
                     if checkConWall(_board) and checkConIsland(i, islId, _board):
                         if len(_cIndexes) == islNum:
                             #_cIndexes.remove(islIndex)
@@ -376,7 +377,7 @@ if __name__ == '__main__':
     else:
         print "Usage: # python %s filename" % argvs[0]
         print "Use default filename:hoge.txt"
-        fileName = "p2.txt"
+        fileName = "p3.txt"
 
     f = open(fileName, 'r')
     wList = []
@@ -409,19 +410,22 @@ if __name__ == '__main__':
     for i in range(0, islID - 1):
         islIndexList[i].append(islList[i][0])
 
-    #printBoards(board)
+    printBoards(board)
 
     possibleAnsList = [[] for i in range(islID - 1)]
 
     oldBoard = []
-    for k in range(10):
+    k = 0
+    while True:
         #checkPath
         reachIdMat = [[] for i in range(xSize * ySize)]
-        indx = 0
+        islList.sort(lambda x, y: x[1] - y[1]) 
+
         for isl in islList:
             islIndex = isl[0]
             islNum = isl[1]
             islId = isl[2]
+            indx = islId - 1
             if len(islIndexList[indx]) == islNum:
                 wallList = fixedIsland(islIndexList[indx], board)
                 for i in wallList:
@@ -438,7 +442,6 @@ if __name__ == '__main__':
                 board[put][1] = islNum
                 if put not in islIndexList[indx]:
                     islIndexList[indx].append(put)
-            indx += 1
         #printBoards(board)
 
         #2x2Island
@@ -459,30 +462,33 @@ if __name__ == '__main__':
 
         #reduce Possible answer list.
         possibleAnsList = reducePosssibleAnsList(possibleAnsList, islIndexList)
-        indx = 0
-        for j in possibleAnsList:
-            islIndex = islList[indx][0]
-            islNum = islList[indx][1]
-            islId = islList[indx][2]
-            if len(j) == 1:
-                for i in j[0]:
+
+        for isl in islList:
+            islIndex = isl[0]
+            islNum = isl[1]
+            islId = isl[2]
+            indx = islId - 1
+            possibleAns = possibleAnsList[indx]
+            if len(possibleAns) == 1:
+                for i in possibleAns[0]:
                     if board[i][0] == 0:
                         board[i][0] = islId
                         board[i][1] = islNum
                         if i not in islIndexList[indx]:
                             islIndexList[indx].append(i)
-            indx += 1
 
         if oldBoard == board:
             print "end heuristic search"
             print "loop:", k
             break
         oldBoard = copy.deepcopy(board)
+        k += 1
         #end try heulistic search 2loops.
 
     #try searching.
     #depthSearch(board, possibleAnsList, islList)
 
+    """
     indx = 0
     for j in possibleAnsList:
         if len(j) == 1:
@@ -492,6 +498,7 @@ if __name__ == '__main__':
         else:
             print "not solved id:", indx + 1, " num:", len(j), " :", j
         indx += 1
+    """
         
     if checkBoardState(board):
         print "This is Answer."
